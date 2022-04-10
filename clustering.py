@@ -1,5 +1,9 @@
+'''
+Taken from https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_digits.html#sphx-glr-auto-examples-cluster-plot-kmeans-digits-py
+'''
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from time import time
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import scale, StandardScaler
@@ -7,49 +11,6 @@ from sklearn.datasets import load_iris, load_digits
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn import metrics
-import matplotlib.pyplot as plt
-
-# data, labels = load_iris(return_X_y=True)
-# flowers = load_iris(as_frame=True)
-# print(flowers.feature_names)
-# print(flowers.target_names)
-# print(flowers.frame)
-
-# print(data)
-# print(labels)
-
-# df = pd.DataFrame(data)
-# print(df)
-
-# # scale data down to range -1 and 1 (for faster computation)
-# data = scale(data)
-
-# k = 8  # num of classes
-# samples, features = data.shape
-
-
-# def bench_k_means(estimator, name, data):
-#     estimator.fit(data)
-#     print('% 9s   %i   %.3f   %.3f   %.3f   %.3f   %.3f    %.3f    %.3f'
-#           % (name, estimator.inertia_,
-#              metrics.homogeneity_score(labels, estimator.labels_),
-#              metrics.completeness_score(labels, estimator.labels_),
-#              metrics.v_measure_score(labels, estimator.labels_),
-#              metrics.adjusted_rand_score(labels, estimator.labels_),
-#              metrics.adjusted_mutual_info_score(labels,  estimator.labels_),
-#              metrics.silhouette_score(data, estimator.labels_,
-#                                       metric='euclidean'),
-#              metrics.davies_bouldin_score(data, estimator.labels_)))
-
-
-# clf = KMeans(n_clusters=k, init="k-means++", n_init=10)
-# bench_k_means(clf, "1", data)
-
-# print(clf.labels_)
-
-'''
-Taken from https://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_digits.html#sphx-glr-auto-examples-cluster-plot-kmeans-digits-py
-'''
 
 
 def bench_k_means(kmeans, name, data, labels):
@@ -159,8 +120,9 @@ def visualize(data, n_digits):
 
 
 def main():
-    data, labels = load_digits(return_X_y=True)
     digits = load_digits()
+    data = digits.data
+    labels = digits.target
 
     (n_samples, n_features), n_digits = data.shape, np.unique(labels).size
 
@@ -184,11 +146,14 @@ def main():
 
     prediction = visualize(data, n_digits)  # plots graph
 
+    num = int(input("\nEnter a number: "))
+
     plt.gray()
     for i in range(len(prediction)):
-        if prediction[i] == 0:
-            plt.matshow(digits.images[i])
-            plt.show()
+        for j in range(len(labels)):
+            if prediction[i] == num and labels[j] == num:
+                plt.matshow(digits.images[j])
+                plt.show()
 
 
 main()
