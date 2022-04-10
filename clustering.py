@@ -155,12 +155,12 @@ def visualize(data, n_digits):
     plt.yticks(())
     plt.show()
 
+    return kmeans.predict(reduced_data)
+
 
 def main():
     data, labels = load_digits(return_X_y=True)
-
-    plt.gray()
-    plt.matshow(data[0])
+    digits = load_digits()
 
     (n_samples, n_features), n_digits = data.shape, np.unique(labels).size
 
@@ -170,12 +170,10 @@ def main():
     print(82 * "_")
     print("init\t\ttime\tinertia\thomo\tcompl\tv-meas\tARI\tAMI\tsilhouette")
 
-    kmeans = KMeans(init="k-means++", n_clusters=n_digits,
-                    n_init=4, random_state=0)
+    kmeans = KMeans(init="k-means++", n_clusters=n_digits, random_state=0)
     bench_k_means(kmeans=kmeans, name="k-means++", data=data, labels=labels)
 
-    kmeans = KMeans(init="random", n_clusters=n_digits,
-                    n_init=4, random_state=0)
+    kmeans = KMeans(init="random", n_clusters=n_digits, random_state=0)
     bench_k_means(kmeans=kmeans, name="random", data=data, labels=labels)
 
     pca = PCA(n_components=n_digits).fit(data)
@@ -184,7 +182,13 @@ def main():
 
     print(82 * "_")
 
-    visualize(data, n_digits)  # plots graph
+    prediction = visualize(data, n_digits)  # plots graph
+
+    plt.gray()
+    for i in range(len(prediction)):
+        if prediction[i] == 0:
+            plt.matshow(digits.images[i])
+            plt.show()
 
 
 main()
